@@ -66,10 +66,21 @@ if (global.vsp &lt; MAX_VSP) {
 }
 
 
+// Determining the direction of gravity
+if not place_free(x, y + 1) 
+    global.g = "down";
+else if not place_free(x, y - 1) 
+    global.g = "up";
+else if not place_free(x + 1, y)
+    global.g = "right";
+else if not place_free(x - 1, y)
+    global.g = "left";
+
+
 // Downward gravity
 if (global.g == "down") {
     // Apply gravity
-    if (!place_free(x, y + 1)) { // If there's a floor beneath us
+    if not place_free(x, y + 1) { // If there's a floor beneath us
        global.vsp = -JUMP_SPEED * keyboard_check_pressed(vk_space);
     }
     if (place_free(x, y +global.vsp)) { // If the frame won't end into a wall
@@ -81,35 +92,79 @@ if (global.g == "down") {
         }
     }
     
-    if (mov_direction != 0) { // If we're moving
-        if (place_free(x + (MOV_SPEED * mov_direction), y)) { // If we're not going into a wall
-            x += MOV_SPEED * mov_direction; // Move
+    mov = MOV_SPEED * mov_direction;
+    while (mov != 0) {                        
+        if not place_free(x + mov_direction, y) {
+        
+            // We're on a wall and need to get on it
+            y -= 1;
+            mov = 0;
+        
+        }
+        else if place_free(x, y + 1) and not place_free(x - mov_direction, y + 1) { 
+            
+            // We're falling and need to stick to the wall
+            y += 1;
+            mov = 0;
+            // Automatic gravity will do the rest
+
+        
         }
         else {
-            // Go to contact one pixel at a time
-            while (place_free(x + mov_direction, y)) { 
-                x += mov_direction;
-            }
-            // And get on that wall
+            mov -= mov_direction; // Keep moving
+            x += mov_direction;
+        }
+    }
+}
+
+// Upward gravity
+else if (global.g == "up") {
+    // Apply gravity
+    if not place_free(x, y - 1) { // If there's a floor beneath us
+       global.vsp = -JUMP_SPEED * keyboard_check_pressed(vk_space);
+    }
+    if (place_free(x, y - global.vsp)) { // If the frame won't end into a wall
+        y -= global.vsp;
+    }
+    else {
+        while (place_free(x, y - sign(global.vsp))) { // Move until just before contact
+            y -= sign(global.vsp);
+        }
+    }
+    
+    mov = MOV_SPEED * mov_direction;
+    while (mov != 0) {                        
+        if not place_free(x - mov_direction, y) {
+        
+            // We're on a wall and need to get on it
+            y += 1;
+            mov = 0;
+        
+        }
+        else if place_free(x, y - 1) and not place_free(x + mov_direction, y - 1) { 
+            
+            // We're falling and need to stick to the wall
             y -= 1;
-            if (mov_direction &gt; 0) {
-                global.g = "right";
-            } 
-            else {
-               global.g = "left";
-            }
+            mov = 0;
+            // Automatic gravity will do the rest
+
+        
+        }
+        else {
+            mov -= mov_direction; // Keep moving
+            x -= mov_direction;
         }
     }
 }
 
 // Rightward gravity
-else if (global.g == "right") { 
+else if (global.g == "right") {
     // Apply gravity
-    if (!place_free(x+1, y)) { // If there's a floor beneath us
+    if not place_free(x + 1, y) { // If there's a floor beneath us
        global.vsp = -JUMP_SPEED * keyboard_check_pressed(vk_space);
     }
-    if (place_free(x +global.vsp, y)) { // If the frame won't end into a wall
-        x +=global.vsp;
+    if (place_free(x + global.vsp,y)) { // If the frame won't end into a wall
+        x += global.vsp;
     }
     else {
         while (place_free(x + sign(global.vsp), y)) { // Move until just before contact
@@ -117,95 +172,67 @@ else if (global.g == "right") {
         }
     }
     
-    if (mov_direction != 0) { // If we're moving
-        if (place_free(x, y - MOV_SPEED * mov_direction)) { // If we're not going into a wall
-            y -= MOV_SPEED * mov_direction; // Move
+    mov = MOV_SPEED * mov_direction;
+    while (mov != 0) {                        
+        if not place_free(x, y - mov_direction) {
+        
+            // We're on a wall and need to get on it
+            x -= 1;
+            mov = 0;
+        
+        }
+        else if place_free(x + 1, y) and not place_free(x + 1, y + mov_direction) { 
+            
+            // We're falling and need to stick to the wall
+            x += 1;
+            mov = 0;
+            // Automatic gravity will do the rest
+
+        
         }
         else {
-            // Go to contact one pixel at a time
-            while (place_free(x, y - mov_direction)) { 
-                y -= mov_direction;
-            }
-            // And get on that wall
-            x -= 1;
-            if (mov_direction &gt; 0) {
-               global.g = "up";
-            } 
-            else {
-               global.g = "down";
-            }
+            mov -= mov_direction; // Keep moving
+            y -= mov_direction;
         }
     }
 }
                 
 // Leftward gravity
-else if (global.g == "left") {  
+else if (global.g == "left") {
     // Apply gravity
-    if (!place_free(x-1, y)) { // If there's a floor beneath us
+    if not place_free(x - 1, y) { // If there's a floor beneath us
        global.vsp = -JUMP_SPEED * keyboard_check_pressed(vk_space);
     }
-    if (place_free(x -global.vsp, y)) { // If the frame won't end into a wall
-        x -=global.vsp;
+    if (place_free(x - global.vsp,y)) { // If the frame won't end into a wall
+        x -= global.vsp;
     }
     else {
         while (place_free(x - sign(global.vsp), y)) { // Move until just before contact
             x -= sign(global.vsp);
         }
     }
-
-    if (mov_direction != 0) { // If we're moving
-        if (place_free(x, y + MOV_SPEED * mov_direction)) { // If we're not going into a wall
-            y += MOV_SPEED * mov_direction; // Move
-        }
-        else {
-            // Go to contact one pixel at a time
-            while (place_free(x, y + mov_direction)) { 
-                y += mov_direction;
-            }
-            // And get on that wall
-            x += 1;
-            if (mov_direction &gt; 0) {
-               global.g = "down";
-            } 
-            else {
-               global.g = "up";
-            }
-        }
-    }
-}
-
-// Upward gravity
-else if (global.g == "up") { 
-    // Apply gravity
-    if (!place_free(x, y-1)) {
-       global.vsp = -JUMP_SPEED * keyboard_check_pressed(vk_space);
-    }
-    if (place_free(x, y -global.vsp)) {
-        y -=global.vsp;
-    }
-    else {
-        while (place_free(x, y - sign(global.vsp))) {
-            y -= sign(global.vsp);
-        }
-    }
     
-    if (mov_direction != 0) { // If we're moving
-        if (place_free (x - MOV_SPEED * mov_direction, y)) { // If we're not going into a wall
-            x -= MOV_SPEED * mov_direction; // Move
+    mov = MOV_SPEED * mov_direction;
+    while (mov != 0) {                        
+        if not place_free(x, y + mov_direction) {
+        
+            // We're on a wall and need to get on it
+            x += 1;
+            mov = 0;
+        
+        }
+        else if place_free(x - 1, y) and not place_free(x - 1, y - mov_direction) { 
+            
+            // We're falling and need to stick to the wall
+            x -= 1;
+            mov = 0;
+            // Automatic gravity will do the rest
+
+        
         }
         else {
-            // Go to contact one pixel at a time
-            while (place_free(x - mov_direction, y)) { 
-                x -= mov_direction;
-            }
-            // And get on that wall
-            y += 1;
-            if (mov_direction &gt; 0) {
-               global.g = "left";
-            } 
-            else {
-               global.g = "right";
-            }
+            mov -= mov_direction; // Keep moving
+            y += mov_direction;
         }
     }
 }
