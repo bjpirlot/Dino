@@ -8,15 +8,36 @@
   <sprites name="sprites">
     <sprite>sprites\sp_mockup_player</sprite>
     <sprite>sprites\sp_mockup_wall</sprite>
+    <sprite>sprites\sp_pit</sprite>
+    <sprite>sprites\sp_mockup_goal</sprite>
+    <sprite>sprites\sp_1</sprite>
+    <sprite>sprites\sp_2</sprite>
+    <sprite>sprites\sp_3</sprite>
+    <sprite>sprites\sp_mockup_collectable</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
+  <scripts name="scripts">
+    <script>scripts\Spawn_player.gml</script>
+    <script>scripts\Set_exit.gml</script>
+  </scripts>
   <objects name="objects">
     <object>objects\ob_mockup_wall</object>
-    <object>objects\oj_mockup_player</object>
+    <object>objects\ob_mockup_player</object>
+    <object>objects\ob_pit</object>
+    <object>objects\ob_mockup_goal</object>
+    <object>objects\ob_goto_room1</object>
+    <object>objects\ob_goto_room2</object>
+    <object>objects\ob_goto_room3</object>
+    <object>objects\ob_mockup_collectable1</object>
+    <object>objects\ob_mockup_collectable2</object>
+    <object>objects\ob_mockup_collectable3</object>
   </objects>
   <rooms name="rooms">
-    <room>rooms\room0</room>
+    <room>rooms\room_init</room>
+    <room>rooms\room_1</room>
+    <room>rooms\room_2</room>
+    <room>rooms\room_3</room>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>
