@@ -14,6 +14,7 @@
     <sprite>sprites\sp_2</sprite>
     <sprite>sprites\sp_3</sprite>
     <sprite>sprites\sp_mockup_collectable</sprite>
+    <sprite>sprites\sprite8</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -24,6 +25,7 @@
   <objects name="objects">
     <object>objects\ob_mockup_wall</object>
     <object>objects\ob_mockup_player</object>
+    <object>objects\object10</object>
     <object>objects\ob_pit</object>
     <object>objects\ob_mockup_goal</object>
     <object>objects\ob_goto_room1</object>
@@ -38,6 +40,7 @@
     <room>rooms\room_1</room>
     <room>rooms\room_2</room>
     <room>rooms\room_3</room>
+    <room>rooms\room_test</room>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>
